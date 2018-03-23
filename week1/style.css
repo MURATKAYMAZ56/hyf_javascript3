@@ -1,0 +1,32 @@
+header {
+    background-color: #3F51B5;
+    padding: 20px;
+    color: #fff;
+}
+span {
+    margin: 30px;
+}
+
+main {
+    display: flex;
+}
+
+#left-sidebar {
+    float:left;
+    flex-basis: calc(40% - 50px);
+    padding: 50px;
+}
+
+#right-sidebar {
+    float:right;
+    flex-basis: calc(60% - 50px);
+    padding: 50px;
+}
+
+img {
+    width: 80px;
+}
+
+table {
+    width: 100%;
+}
