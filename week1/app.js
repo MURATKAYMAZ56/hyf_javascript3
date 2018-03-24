@@ -3,13 +3,13 @@ const API = {
 
     endpoints: {
 
-        repos: function (page = 100) {
-            return 'https://api.github.com/orgs/HackYourFuture/repos?per_page=' + page;
-        }
+        repos: 'https://api.github.com/orgs/HackYourFuture/repos?per_page=100'
+
 
     }
 
 };
+
 
 function fetchJSON(url, callback) {
 
@@ -19,18 +19,15 @@ function fetchJSON(url, callback) {
     xhr.onreadystatechange = () => {
         if (xhr.readyState === 4) {
 
-            if (typeof callback === 'function') {
+            if (xhr.status < 400) {
 
-                if (xhr.status < 400) {
+                callback(null, xhr.response);
 
-                    callback(null, xhr.response);
+            } else {
 
-                } else {
-
-                    callback(new Error(xhr.statusText));
-                }
-
+                callback(new Error(xhr.statusText), null);
             }
+
 
         }
     };
@@ -39,14 +36,14 @@ function fetchJSON(url, callback) {
 
 function getRepos() {
 
-    fetchJSON(API.endpoints.repos(), (err, response) => {
+    fetchJSON(API.endpoints.repos, (err, response) => {
 
         if (err) {
             console.log(err);
             return;
         }
 
-        const repos = response.map((repo) => {
+        const repositories = response.map((repo) => {
             return {
                 name: repo.name,
                 description: repo.description,
@@ -56,7 +53,25 @@ function getRepos() {
             };
         });
 
-        renderSelect(repos);
+        const root = document.getElementById('root');
+
+        const header = append('header', root);
+
+        const title = append('span', header);
+        title.innerHTML = "HYF Repositories";
+
+        const select = append('select', header);
+
+        repositories.forEach(repo => {
+            const option = append('option', select);
+            option.setAttribute('value', JSON.stringify(repo));
+            option.innerHTML = repo.name;
+        });
+
+        select.addEventListener('change', onSelectChanged);
+
+        const main = append('main', root);
+        main.innerHTML = "<div id='left-sidebar'></div><div id='right-sidebar'></div>";
 
     });
 
@@ -68,31 +83,7 @@ function append(tagName, parent) {
     return elem;
 }
 
-function renderSelect(repositories) {
-
-    const root = document.getElementById('root');
-
-    const header = append('header', root);
-
-    const title = append('span', header);
-    title.innerHTML = "HYF Repositories";
-
-    const select = append('select', header);
-
-    repositories.forEach(repo => {
-        const option = append('option', select);
-        option.setAttribute('value', JSON.stringify(repo));
-        option.innerHTML = repo.name;
-    });
-
-    select.addEventListener('change', onSelectChanged);
-
-    const main = append('main', root);
-    main.innerHTML = "<div id='left-sidebar'></div><div id='right-sidebar'></div>";
-
-}
-
-function onSelectChanged() {
+function onSelectChanged(event) {
 
     const repo = JSON.parse(event.target.value);
 
