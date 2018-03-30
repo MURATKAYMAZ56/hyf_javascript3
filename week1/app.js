@@ -1,15 +1,5 @@
 
-const API = {
-
-    endpoints: {
-
-        repos: 'https://api.github.com/orgs/HackYourFuture/repos?per_page=100'
-
-
-    }
-
-};
-
+const hyfUrl = 'https://api.github.com/orgs/HackYourFuture/repos?per_page=100';
 
 function fetchJSON(url, callback) {
 
@@ -34,9 +24,9 @@ function fetchJSON(url, callback) {
     xhr.send();
 }
 
-function getRepos() {
+function main() {
 
-    fetchJSON(API.endpoints.repos, (err, response) => {
+    fetchJSON(hyfUrl, (err, response) => {
 
         if (err) {
             console.log(err);
@@ -127,7 +117,7 @@ function onSelectChanged(event) {
             };
         });
 
-        var contributorsHtml = "<table>";
+        let contributorsHtml = "<table>";
 
         contributors.forEach(contributor => {
             contributorsHtml += "<tr>"
@@ -145,4 +135,4 @@ function onSelectChanged(event) {
 }
 
 
-getRepos();
+main();
