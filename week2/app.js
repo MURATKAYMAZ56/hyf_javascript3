@@ -111,36 +111,39 @@ function onSelectChanged(event) {
     const rightSidebar = document.getElementById("right-sidebar");
     rightSidebar.innerHTML = "Loading...";
 
-    fetchJSON(repo.contributors_url, (err, response) => {
+    fetchJSON(repo.contributors_url).then(
+        const contributors = response.map((contributor) => {
+        return {
+            name: contributor.login,
+            avatar: contributor.avatar_url,
+            contributions: contributor.contributions
+        };
+    });
+
+    let contributorsHtml = "<table>";
+
+    contributors.forEach(contributor => {
+        contributorsHtml += "<tr>"
+            + "<td><img src='" + contributor.avatar + "'/></td>"
+            + "<td>" + contributor.name + "</td>"
+            + "<td>" + contributor.contributions + "</td>"
+            + "</tr>";
+    });
+
+    contributorsHtml += "</table>";
+
+    rightSidebar.innerHTML = contributorsHtml;
+
+    ).catch ((err) => {
 
         if (err) {
             console.log(err);
             return;
         }
 
-        const contributors = response.map((contributor) => {
-            return {
-                name: contributor.login,
-                avatar: contributor.avatar_url,
-                contributions: contributor.contributions
-            };
-        });
-
-        let contributorsHtml = "<table>";
-
-        contributors.forEach(contributor => {
-            contributorsHtml += "<tr>"
-                + "<td><img src='" + contributor.avatar + "'/></td>"
-                + "<td>" + contributor.name + "</td>"
-                + "<td>" + contributor.contributions + "</td>"
-                + "</tr>";
-        });
-
-        contributorsHtml += "</table>";
-
-        rightSidebar.innerHTML = contributorsHtml;
 
     });
+
 }
 
 
